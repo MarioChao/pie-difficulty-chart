@@ -67,6 +67,8 @@ end
 local function onStageSelectClientEvent(mode: string, ...)
 	if mode == "Set Stage" then
 		serverSetStage(...)
+	elseif mode == "Select Fail" then
+		StageNumber_TextBox.Text = currentStage
 	end
 end
 

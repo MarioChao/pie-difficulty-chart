@@ -8,6 +8,7 @@
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 
 ---------- Imports ----------
@@ -46,18 +47,18 @@ local function selectStage(moveToStage: boolean, player: Player, stage: string)
 	-- Validate player profile
 	local playerProfile = Player_Profile.getPlayerProfile(player)
 	if not playerProfile then
-		return
+		return false
 	end
 
 	-- Validate stage unlocked for player
 	if playerProfile.Data.UnlockedStages[stage] ~= true then
-		return
+		return false
 	end
 
 	-- Get and validate stage
 	local stageInfo = StageInfo.getInfo(stage)
 	if not stageInfo then
-		return
+		return false
 	end
 
 	-- Move to stage
@@ -68,11 +69,14 @@ local function selectStage(moveToStage: boolean, player: Player, stage: string)
 	-- Change current stage
 	playerProfile.Data.CurrentStage = stage
 	task.defer(function()
-		Player_Leaderstats.getPlayerLeaderstats(player).Current_Stage.Value = stage
+		Player_Leaderstats.getPlayerLeaderstats(player)["Current Stage"].Value = stage
 	end)
 
 	-- Change stage on client
 	SharedEvents.StageSelect_Remote:FireClient(player, "Set Stage", stage, stageInfo.StageNumber)
+
+	-- Return success
+	return true
 end
 
 
@@ -80,7 +84,10 @@ end
 
 local function onStageSelectServerEvent(player: Player, mode: string, ...)
 	if mode == "Select Stage" then
-		selectStage(true, player, ...)
+		local success = selectStage(true, player, ...)
+		if not success then
+			SharedEvents.StageSelect_Remote:FireClient(player, "Select Fail")
+		end
 	end
 end
 
@@ -93,11 +100,17 @@ end
 local function onPlayerAdded(player: Player)
 	-- Sync leaderstats
 	task.defer(function()
-		Player_Leaderstats.getPlayerLeaderstats(player).Best_Stage.Value = Player_Profile.getPlayerProfile(player).Data.BestStage
+		Player_Leaderstats.getPlayerLeaderstats(player)["Best Stage"].Value = Player_Profile.getPlayerProfile(player).Data.BestStage
 	end)
 
 	-- Set current stage
 	selectStage(true, player, Player_Profile.getPlayerProfile(player).Data.CurrentStage)
+
+	-- Respawn at current stage
+	player.CharacterAdded:Connect(function(character: Model)
+		RunService.Heartbeat:Wait()
+		selectStage(true, player, Player_Profile.getPlayerProfile(player).Data.CurrentStage)
+	end)
 end
 
 

@@ -31,6 +31,10 @@ local function onStagePartTouched(part: BasePart, stage: string)
 	local player = Players:GetPlayerFromCharacter(character)
 	if not player then return end
 
+	-- Validate alive
+	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	if humanoid.Health <= 0 then return end
+
 	-- Get and validate player profile
 	local playerProfile = Player_Profile.getPlayerProfile(player)
 	if not playerProfile then return end
@@ -66,7 +70,7 @@ local function onStagePartTouched(part: BasePart, stage: string)
 	if stageConfig.StageNumber > StageInfo.getInfo(previousBestStage).StageNumber then
 		playerProfile.Data.BestStage = stage
 		task.defer(function()
-			Player_Leaderstats.getPlayerLeaderstats(player).Best_Stage.Value = stage
+			Player_Leaderstats.getPlayerLeaderstats(player)["Best Stage"].Value = stage
 		end)
 	end
 
