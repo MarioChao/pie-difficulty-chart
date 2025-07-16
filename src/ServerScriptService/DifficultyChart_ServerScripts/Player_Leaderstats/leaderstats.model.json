@@ -1,0 +1,37 @@
+{
+	"className": "Folder",
+	"children": [
+		{
+			"name": "Best_Stage",
+			"className": "StringValue",
+			"properties": {
+				"Value": {"String": "-"}
+			},
+			"children": [
+				{
+					"name": "Priority",
+					"className": "NumberValue",
+					"properties": {
+						"Value": {"Float64": 100}
+					}
+				}
+			]
+		},
+		{
+			"name": "Current_Stage",
+			"className": "StringValue",
+			"properties": {
+				"Value": {"String": "-"}
+			},
+			"children": [
+				{
+					"name": "Priority",
+					"className": "NumberValue",
+					"properties": {
+						"Value": {"Float64": 90}
+					}
+				}
+			]
+		}
+	]
+}

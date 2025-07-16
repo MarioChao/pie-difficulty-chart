@@ -1,0 +1,37 @@
+{
+  "name": "stella-pie-hiking-difficulty-chart",
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "$path": "src/ReplicatedStorage",
+      "$ignoreUnknownInstances": true
+    },
+
+    "ServerScriptService": {
+      "$path": "src/ServerScriptService",
+      "$ignoreUnknownInstances": true
+    },
+
+    "StarterGui": {
+      "$path": "src/StarterGui",
+      "$ignoreUnknownInstances": true
+    },
+
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "$path": "src/StarterPlayerScripts",
+        "$ignoreUnknownInstances": true
+      }
+    },
+
+    "Workspace": {
+      "_Workspace": {
+        "$className": "Folder",
+        "StageStartParts_Folder": {
+          "$className": "Folder"
+        }
+      }
+    }
+  }
+}
