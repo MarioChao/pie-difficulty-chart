@@ -21,7 +21,8 @@ local StageSelect_Frame = DifficultyChart_ScreenGui:WaitForChild("StageSelect_Fr
 
 local Previous_TextButton = StageSelect_Frame:WaitForChild("Previous_TextButton")
 local Next_TextButton = StageSelect_Frame:WaitForChild("Next_TextButton")
-local StageNumber_TextBox = StageSelect_Frame:WaitForChild("StageNumber_TextBox")
+local CurrentStage_TextButton = StageSelect_Frame:WaitForChild("CurrentStage_TextButton")
+local StageInput_TextBox = StageSelect_Frame:WaitForChild("StageInput_TextBox")
 
 
 ---------- Variables ----------
@@ -37,7 +38,6 @@ local function selectStage(stage: string)
 end
 
 local function changeStageBy(delta: number)
-	-- currentStageNumber += delta
 	selectStage(currentStageNumber + delta)
 end
 
@@ -45,20 +45,22 @@ local function initializeUIs()
 	-- Set up connections
 	Previous_TextButton.MouseButton1Click:Connect(function() changeStageBy(-1) end)
 	Next_TextButton.MouseButton1Click:Connect(function() changeStageBy(1) end)
-	StageNumber_TextBox.FocusLost:Connect(function(enterPressed: boolean)
+	CurrentStage_TextButton.MouseButton1Click:Connect(function() selectStage(currentStage) end)
+	StageInput_TextBox.FocusLost:Connect(function(enterPressed: boolean)
 		if enterPressed then
-			selectStage(StageNumber_TextBox.Text)
-		else
-			StageNumber_TextBox.Text = currentStage
+			selectStage(StageInput_TextBox.Text)
 		end
 	end)
 end
 
 local function serverSetStage(stage: string, stageNumber: number)
 	-- Set stage
-	StageNumber_TextBox.Text = stage
+	CurrentStage_TextButton.Text = stage
 	currentStage = stage
 	currentStageNumber = stageNumber
+
+	-- Clear input
+	StageInput_TextBox.Text = ""
 end
 
 
@@ -68,7 +70,7 @@ local function onStageSelectClientEvent(mode: string, ...)
 	if mode == "Set Stage" then
 		serverSetStage(...)
 	elseif mode == "Select Fail" then
-		StageNumber_TextBox.Text = currentStage
+		-- Do nothing
 	end
 end
 
