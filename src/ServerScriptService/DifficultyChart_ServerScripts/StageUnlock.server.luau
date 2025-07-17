@@ -70,7 +70,7 @@ local function onStagePartTouched(part: BasePart, stage: string)
 	if stageConfig.StageNumber > StageInfo.getInfo(previousBestStage).StageNumber then
 		playerProfile.Data.BestStage = stage
 		task.defer(function()
-			Player_Leaderstats.getPlayerLeaderstats(player)["Best Stage"].Value = stage
+			Player_Leaderstats.getPlayerLeaderstats(player)["Stage"].Value = stage
 		end)
 	end
 

@@ -68,9 +68,6 @@ local function selectStage(moveToStage: boolean, player: Player, stage: string)
 
 	-- Change current stage
 	playerProfile.Data.CurrentStage = stage
-	task.defer(function()
-		Player_Leaderstats.getPlayerLeaderstats(player)["Current Stage"].Value = stage
-	end)
 
 	-- Change stage on client
 	SharedEvents.StageSelect_Remote:FireClient(player, "Set Stage", stage, stageInfo.StageNumber)
@@ -100,7 +97,7 @@ end
 local function onPlayerAdded(player: Player)
 	-- Sync leaderstats
 	task.defer(function()
-		Player_Leaderstats.getPlayerLeaderstats(player)["Best Stage"].Value = Player_Profile.getPlayerProfile(player).Data.BestStage
+		Player_Leaderstats.getPlayerLeaderstats(player)["Stage"].Value = Player_Profile.getPlayerProfile(player).Data.BestStage
 	end)
 
 	-- Set current stage

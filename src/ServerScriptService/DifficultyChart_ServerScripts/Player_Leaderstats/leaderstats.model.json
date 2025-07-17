@@ -2,7 +2,7 @@
 	"className": "Folder",
 	"children": [
 		{
-			"name": "Best Stage",
+			"name": "Stage",
 			"className": "StringValue",
 			"properties": {
 				"Value": {"String": "-"}
@@ -13,22 +13,6 @@
 					"className": "NumberValue",
 					"properties": {
 						"Value": {"Float64": 100}
-					}
-				}
-			]
-		},
-		{
-			"name": "Current Stage",
-			"className": "StringValue",
-			"properties": {
-				"Value": {"String": "-"}
-			},
-			"children": [
-				{
-					"name": "Priority",
-					"className": "NumberValue",
-					"properties": {
-						"Value": {"Float64": 90}
 					}
 				}
 			]
