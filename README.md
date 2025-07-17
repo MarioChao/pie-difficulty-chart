@@ -1,6 +1,6 @@
-# stella-pie-hiking-difficulty-chart
+# pie-difficulty-chart
 
-Repository for the game Stella's Pie Hiking Difficulty Chart.
+Repository for the game Pie Difficulty Chart.
 
 Made with [Rojo](https://github.com/rojo-rbx/rojo) 7.5.1.
 
