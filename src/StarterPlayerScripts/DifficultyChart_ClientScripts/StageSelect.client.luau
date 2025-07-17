@@ -28,7 +28,6 @@ local StageInput_TextBox = StageSelect_Frame:WaitForChild("StageInput_TextBox")
 ---------- Variables ----------
 
 local currentStage = ""
-local currentStageNumber = 0
 
 
 ---------- Local functions ----------
@@ -38,7 +37,7 @@ local function selectStage(stage: string)
 end
 
 local function changeStageBy(delta: number)
-	selectStage(currentStageNumber + delta)
+	SharedEvents.StageSelect_Remote:FireServer("Change Stage By", delta)
 end
 
 local function initializeUIs()
@@ -57,7 +56,6 @@ local function serverSetStage(stage: string, stageNumber: number)
 	-- Set stage
 	CurrentStage_TextButton.Text = stage
 	currentStage = stage
-	currentStageNumber = stageNumber
 
 	-- Clear input
 	StageInput_TextBox.Text = ""

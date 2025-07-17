@@ -76,12 +76,45 @@ local function selectStage(moveToStage: boolean, player: Player, stage: string)
 	return true
 end
 
+local function changeStageBy(player: Player, delta: number)
+	-- Sanitize input
+	delta = tonumber(delta)
+
+	-- Validate input
+	if not delta then
+		return
+	end
+
+	-- Validate player profile
+	local playerProfile = Player_Profile.getPlayerProfile(player)
+	if not playerProfile then
+		return false
+	end
+
+	-- Get player's current stage
+	local currentStage = playerProfile.Data.CurrentStage
+
+	-- Validate stage info
+	local currentStageInfo = StageInfo.getInfo(currentStage)
+	if not currentStageInfo then
+		return
+	end
+
+	-- Select stage
+	selectStage(true, player, currentStageInfo.StageNumber + delta)
+end
+
 
 ---------- Event functions ----------
 
 local function onStageSelectServerEvent(player: Player, mode: string, ...)
 	if mode == "Select Stage" then
 		local success = selectStage(true, player, ...)
+		if not success then
+			SharedEvents.StageSelect_Remote:FireClient(player, "Select Fail")
+		end
+	elseif mode == "Change Stage By" then
+		local success = changeStageBy(player, ...)
 		if not success then
 			SharedEvents.StageSelect_Remote:FireClient(player, "Select Fail")
 		end
