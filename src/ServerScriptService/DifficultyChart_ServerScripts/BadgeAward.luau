@@ -10,6 +10,7 @@ local BadgeAward = {}
 ---------- Services ----------
 
 local BadgeService = game:GetService("BadgeService")
+local RunService = game:GetService("RunService")
 
 
 ---------- Types ----------
@@ -95,7 +96,11 @@ local function resolveAwardBadge(player: Player, badgeId: number, badgeName: str
 	end
 
 	-- Award badge
-	awardBadge(player, badgeId)
+	if RunService:IsStudio() then
+		print(`[Mock Badge Award]: {player.Name} won "{badgeInfo.Name}" award.`)
+	else
+		awardBadge(player, badgeId)
+	end
 end
 
 
