@@ -4,6 +4,7 @@
 
 ---------- Services ----------
 
+local ContextActionService = game:GetService("ContextActionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 
@@ -29,6 +30,10 @@ local StageInput_TextBox = StageSelect_Frame:WaitForChild("StageInput_TextBox")
 
 local currentStage = ""
 
+local action_actionName = {
+	Retry = "StageSelect: Retry",
+}
+
 
 ---------- Local functions ----------
 
@@ -38,6 +43,15 @@ end
 
 local function changeStageBy(delta: number)
 	SharedEvents.StageSelect_Remote:FireServer("Change Stage By", delta)
+end
+
+local function serverSetStage(stage: string, stageNumber: number)
+	-- Set stage
+	CurrentStage_TextButton.Text = stage
+	currentStage = stage
+
+	-- Clear input
+	StageInput_TextBox.Text = ""
 end
 
 local function initializeUIs()
@@ -52,13 +66,25 @@ local function initializeUIs()
 	end)
 end
 
-local function serverSetStage(stage: string, stageNumber: number)
-	-- Set stage
-	CurrentStage_TextButton.Text = stage
-	currentStage = stage
 
-	-- Clear input
-	StageInput_TextBox.Text = ""
+---------- Action functions ----------
+
+local function handleAction(actionName: string, inputState: Enum.UserInputState, inputObject: InputObject)
+	local isBeginState = (inputState == Enum.UserInputState.Begin)
+	local isCancelOrEndState = (inputState == Enum.UserInputState.Cancel) or (inputState == Enum.UserInputState.End)
+
+	task.defer(function()
+		if actionName == action_actionName.Retry then
+			-- Retry / restart stage
+			if isBeginState then
+				selectStage(currentStage)
+			end
+		end
+	end)
+end
+
+local function setKeybinds()
+	ContextActionService:BindAction(action_actionName.Retry, handleAction, false, Enum.KeyCode.R)
 end
 
 
@@ -75,5 +101,7 @@ end
 
 ---------- Calling / connecting functions ----------
 
-initializeUIs()
+task.defer(initializeUIs)
+task.defer(setKeybinds)
+
 SharedEvents.StageSelect_Remote.OnClientEvent:Connect(onStageSelectClientEvent)
