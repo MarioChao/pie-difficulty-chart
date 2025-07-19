@@ -26,7 +26,7 @@ local player_leaderstatsFolder: {[Player]: typeof(DefaultLeaderstats)} = {}
 ---------- Local functions ----------
 
 local function getPlayerLeaderstats(player: Player, timeout: number?): typeof(DefaultLeaderstats)
-	timeout = timeout or 5
+	timeout = timeout or 20
 
 	local leaderstatsFolder = player_leaderstatsFolder[player]
 	local startTime = time()

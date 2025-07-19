@@ -34,7 +34,7 @@ local RunService = game:GetService("RunService")
 ---------- Local functions ----------
 
 local function getPlayerProfile(player: Player, timeout: number?)
-	timeout = timeout or 5
+	timeout = timeout or 20
 
 	local profile = player_profile[player]
 	local startTime = time()

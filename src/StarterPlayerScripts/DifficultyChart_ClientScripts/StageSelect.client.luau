@@ -46,12 +46,14 @@ local function changeStageBy(delta: number)
 end
 
 local function serverSetStage(stage: string, stageNumber: number)
+	-- Clear input if same
+	if StageInput_TextBox.Text == stage then
+		StageInput_TextBox.Text = ""
+	end
+
 	-- Set stage
 	CurrentStage_TextButton.Text = stage
 	currentStage = stage
-
-	-- Clear input
-	StageInput_TextBox.Text = ""
 end
 
 local function initializeUIs()
