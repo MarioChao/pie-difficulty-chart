@@ -1,0 +1,8 @@
+[package]
+name = "mariochao/pie-difficulty-chart"
+version = "0.0.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[server-dependencies]
+BadgeUtil = "mariochao/badge-util@^0.0.0"

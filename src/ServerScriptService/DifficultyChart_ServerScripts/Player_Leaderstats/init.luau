@@ -26,7 +26,7 @@ local player_leaderstatsFolder: {[Player]: typeof(DefaultLeaderstats)} = {}
 ---------- Local functions ----------
 
 local function getPlayerLeaderstats(player: Player, timeout: number?): typeof(DefaultLeaderstats)
-	timeout = timeout or 20
+	local realTimeout = timeout or 20
 
 	local leaderstatsFolder = player_leaderstatsFolder[player]
 	local startTime = time()
@@ -36,7 +36,7 @@ local function getPlayerLeaderstats(player: Player, timeout: number?): typeof(De
 		RunService.Heartbeat:Wait()
 
 		-- Check timeout
-		if time() - startTime > timeout then
+		if time() - startTime > realTimeout then
 			print(`Leaderstats for user {player.UserId} not found.`)
 			break
 		end
@@ -53,11 +53,12 @@ end
 
 local function setUpLeaderstats(player: Player)
 	-- Get leaderstats folder
-	local leaderstatsFolder = player:FindFirstChild("leaderstats")
-	if not leaderstatsFolder then
-		leaderstatsFolder = DefaultLeaderstats:Clone()
-		leaderstatsFolder.Parent = player
-	end
+	local leaderstatsFolder: Folder = player:FindFirstChild("leaderstats")
+		or (function()
+			local newFolder = DefaultLeaderstats:Clone()
+			newFolder.Parent = player
+			return newFolder
+		end)()
 
 	-- Set up leaderstats folder
 	for _, object in DefaultLeaderstats:GetChildren() do

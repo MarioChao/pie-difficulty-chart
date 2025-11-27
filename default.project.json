@@ -10,7 +10,12 @@
 
     "ServerScriptService": {
       "$path": "src/ServerScriptService",
-      "$ignoreUnknownInstances": true
+      "$ignoreUnknownInstances": true,
+
+      "Modules": {
+        "$path": "ServerPackages",
+        "$ignoreUnknownInstances": true
+      }
     },
 
     "StarterGui": {
@@ -33,5 +38,6 @@
         }
       }
     }
-  }
+  },
+  "globIgnorePaths": ["**/wally.toml"]
 }

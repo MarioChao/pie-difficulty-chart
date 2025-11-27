@@ -2,11 +2,6 @@
 -- Stage Config Module
 
 
----------- Module ----------
-
-local Module = {}
-
-
 ---------- Types ----------
 
 export type StageConfig = {
@@ -34,6 +29,23 @@ local function createStageConfig(stageConfig: StageConfig)
 	return resultConfig
 end
 
+
+---------- Module ----------
+
+local Module = {} :: ModuleData
+
+
+---------- Module types ----------
+
+export type ModuleData = {
+	[string]: StageConfig,
+}
+
+
+---------- Module variables ----------
+
+----- Numerical stages -----
+
 local function setUpNumericalstages()
 	Module["0"] = createStageConfig({StageNumber = 0, RequiredStages = {}})
 	for i = 1, 352 do
@@ -44,14 +56,12 @@ local function setUpNumericalstages()
 	end
 end
 
-
----------- Module variables ----------
-
 setUpNumericalstages()
 
 
 ----- Special stages -----
 
+Module["22"] = createStageConfig({StageNumber = 21, RequiredStages = {"21", "Special1"}})
 Module["VIP"] = createStageConfig({StageNumber = 0, RequiredStages = {"50"}})
 
 

@@ -13,8 +13,8 @@ local ProfileStore = require(script.ProfileStore)
 
 
 local PROFILE_TEMPLATE = {
-	BestStage = 0,
-	CurrentStage = 0,
+	BestStage = "0",
+	CurrentStage = "0",
 	UnlockedStages = {["0"] = true} :: {[string]: boolean},
 }
 local DifficultyChart_PlayerStore = ProfileStore.New("DifficultyChart_PlayerStore", PROFILE_TEMPLATE)
@@ -22,7 +22,7 @@ local DifficultyChart_PlayerStore = ProfileStore.New("DifficultyChart_PlayerStor
 
 ---------- Variables ----------
 
-local player_profile: {[Player]: typeof(DifficultyChart_PlayerStore:StartSessionAsync())} = {}
+local player_profile: {[Player]: ProfileStore.Profile<typeof(PROFILE_TEMPLATE)>} = {}
 
 
 ---------- Services ----------
@@ -34,7 +34,7 @@ local RunService = game:GetService("RunService")
 ---------- Local functions ----------
 
 local function getPlayerProfile(player: Player, timeout: number?)
-	timeout = timeout or 20
+	local realTimeout = timeout or 20
 
 	local profile = player_profile[player]
 	local startTime = time()
@@ -44,7 +44,7 @@ local function getPlayerProfile(player: Player, timeout: number?)
 		RunService.Heartbeat:Wait()
 
 		-- Check timeout
-		if time() - startTime > timeout then
+		if time() - startTime > realTimeout then
 			print(`Profile for user {player.UserId} not found.`)
 			break
 		end

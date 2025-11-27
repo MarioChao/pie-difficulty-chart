@@ -27,7 +27,7 @@ local StageStartParts_Folder = workspace._Workspace.StageStartParts_Folder
 
 ---------- Variables ----------
 
-local stage_stageInfos: {string: StageInfo} = {}
+local stage_stageInfos: {[string]: StageInfo} = {}
 
 
 ---------- Local functions ----------

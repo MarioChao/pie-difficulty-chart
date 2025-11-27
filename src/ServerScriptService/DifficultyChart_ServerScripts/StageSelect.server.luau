@@ -76,13 +76,13 @@ local function selectStage(moveToStage: boolean, player: Player, stage: string)
 	return true
 end
 
-local function changeStageBy(player: Player, delta: number)
+local function changeStageBy(player: Player, delta: number?)
 	-- Sanitize input
 	delta = tonumber(delta)
 
 	-- Validate input
 	if not delta then
-		return
+		return false
 	end
 
 	-- Validate player profile
@@ -97,11 +97,13 @@ local function changeStageBy(player: Player, delta: number)
 	-- Validate stage info
 	local currentStageInfo = StageInfo.getInfo(currentStage)
 	if not currentStageInfo then
-		return
+		return false
 	end
 
 	-- Select stage
-	selectStage(true, player, currentStageInfo.StageNumber + delta)
+	selectStage(true, player, tostring(currentStageInfo.StageNumber + delta))
+
+	return true
 end
 
 

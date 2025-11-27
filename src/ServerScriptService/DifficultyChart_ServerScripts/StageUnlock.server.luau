@@ -20,7 +20,8 @@ local Player_Leaderstats = require(script.Parent.Player_Leaderstats)
 
 local Player_Profile = require(script.Parent.Player_Profile)
 
-local BadgeAward = require(script.Parent.BadgeAward)
+local _Modules = script.Parent.Parent.Modules
+local BadgeUtil = require(_Modules.BadgeUtil)
 
 
 ---------- Variables ----------
@@ -34,10 +35,12 @@ local function onStagePartTouched(part: BasePart, stage: string, stagePart: Base
 	-- Validate player
 	local character = part.Parent
 	local player = Players:GetPlayerFromCharacter(character)
+	if not character then return end
 	if not player then return end
 
 	-- Validate alive
 	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	if not humanoid then return end
 	if humanoid.Health <= 0 then return end
 
 	-- Get and validate player profile
@@ -101,7 +104,7 @@ local function onStagePartTouched(part: BasePart, stage: string, stagePart: Base
 
 	-- Award badge
 	if stageConfig.AwardBadge and previousStage == stageConfig.AwardBadge.fromStage then
-		BadgeAward.resolveAwardBadge(player, stageConfig.AwardBadge.id, stageConfig.AwardBadge.name)
+		BadgeUtil.awardBadgeLoop(player, stageConfig.AwardBadge.id, stageConfig.AwardBadge.name)
 	end
 
 	-- Update best stage
