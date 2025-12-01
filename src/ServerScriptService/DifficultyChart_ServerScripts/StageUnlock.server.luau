@@ -31,18 +31,15 @@ local TOUCH_DISTANCE_EPSILON = 7
 
 ---------- Local functions ----------
 
-local function onStagePartTouched(part: BasePart, stage: string, stagePart: BasePart)
-	-- Validate player
-	local character = part.Parent
-	local player = Players:GetPlayerFromCharacter(character)
-	if not character then return end
-	if not player then return end
+local unlockStage
+local onStagePartTouched
+local onStageUnlockQueryEvent
+local setUpStages
 
-	-- Validate alive
-	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
-	if not humanoid then return end
-	if humanoid.Health <= 0 then return end
 
+----- Unlock -----
+
+unlockStage = function(player: Player, stage: string)
 	-- Get and validate player profile
 	local playerProfile = Player_Profile.getPlayerProfile(player)
 	if not playerProfile then return end
@@ -73,15 +70,6 @@ local function onStagePartTouched(part: BasePart, stage: string, stagePart: Base
 
 	-- Validate different stages
 	if previousStage == stage then
-		return
-	end
-
-	-- Validate touched part close to stage part
-	local partPosition = part.CFrame.Position
-	local stagePartPosition = stagePart.CFrame.Position
-	local touchDistance = (partPosition - stagePartPosition).Magnitude
-	if touchDistance > (part.ExtentsSize.Magnitude + stagePart.ExtentsSize.Magnitude) / 2 + TOUCH_DISTANCE_EPSILON then
-		-- print(`[Stage Unlock]: Player {player.UserId} invald touch detected, stage {previousStage} => {stage}`)
 		return
 	end
 
@@ -121,19 +109,63 @@ local function onStagePartTouched(part: BasePart, stage: string, stagePart: Base
 	-- Select stage if not already
 	if playerProfile.Data.CurrentStage ~= stage then
 		playerProfile.Data.CurrentStage = stage
-		ServerEvents.StageSelect_Bindable:Fire("Select Stage No Move", player, stage)
+		ServerEvents.StageSelectQuery_Bindable:Fire("Select Stage No Move", player, stage)
 	end
 end
 
-local function setUpStages()
+onStagePartTouched = function(part: BasePart, stage: string, stagePart: BasePart)
+	-- Validate player
+	local character = part.Parent
+	local player = Players:GetPlayerFromCharacter(character)
+	if not character then return end
+	if not player then return end
+
+	-- Validate alive
+	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	if not humanoid then return end
+	if humanoid.Health <= 0 then return end
+
+	-- Validate touched part close to stage part
+	local partPosition = part.CFrame.Position
+	local stagePartPosition = stagePart.CFrame.Position
+	local touchDistance = (partPosition - stagePartPosition).Magnitude
+	if touchDistance > (part.ExtentsSize.Magnitude + stagePart.ExtentsSize.Magnitude) / 2 + TOUCH_DISTANCE_EPSILON then
+		-- print(`[Stage Unlock]: Player {player.UserId} invald touch detected, stage {previousStage} => {stage}`)
+		return
+	end
+
+	-- Unlock
+	unlockStage(player, stage)
+end
+
+onStageUnlockQueryEvent = function(mode: string, ...)
+	if mode == "Player Unlock Stage" then
+		unlockStage(...)
+	end
+end
+
+
+----- Set up -----
+
+setUpStages = function()
 	for stage, stageInfo: StageInfo.StageInfo in StageInfo.stage_stageInfos do
-		stageInfo.StartPart.Touched:Connect(function(otherPart: BasePart)
-			onStagePartTouched(otherPart, stage, stageInfo.StartPart)
-		end)
+		if Stage_Config[stage].Unlock_ByTouch then
+			stageInfo.StartPart.Touched:Connect(function(otherPart: BasePart)
+				onStagePartTouched(otherPart, stage, stageInfo.StartPart)
+			end)
+		end
 	end
 end
 
 
----------- Calling / connecting functions ----------
+----- Main -----
 
-setUpStages()
+local function main()
+	ServerEvents.StageUnlockQuery_Bindable.Event:Connect(onStageUnlockQueryEvent)
+	setUpStages()
+end
+
+
+---------- Calling functions ----------
+
+main()

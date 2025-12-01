@@ -12,6 +12,7 @@ export type StageConfig = {
 	}?,
 	StageNumber: number,
 	RequiredStages: {string},
+	Unlock_ByTouch: boolean,
 }
 
 
@@ -22,6 +23,7 @@ local function createStageConfig(stageConfig: StageConfig)
 		AwardBadge = nil,
 		StageNumber = 0,
 		RequiredStages = {},
+		Unlock_ByTouch = false,
 	}
 	for key, value in stageConfig do
 		resultConfig[key] = value
@@ -47,11 +49,12 @@ export type ModuleData = {
 ----- Numerical stages -----
 
 local function setUpNumericalstages()
-	Module["0"] = createStageConfig({StageNumber = 0, RequiredStages = {}})
+	Module["0"] = createStageConfig({StageNumber = 0, RequiredStages = {}, Unlock_ByTouch = true})
 	for i = 1, 352 do
 		Module[`{i}`] = createStageConfig({
 			StageNumber = i,
-			RequiredStages = {`{i - 1}`}
+			RequiredStages = {`{i - 1}`},
+			Unlock_ByTouch = true,
 		})
 	end
 end
@@ -61,8 +64,8 @@ setUpNumericalstages()
 
 ----- Special stages -----
 
-Module["22"] = createStageConfig({StageNumber = 21, RequiredStages = {"21", "Special1"}})
-Module["VIP"] = createStageConfig({StageNumber = 0, RequiredStages = {"50"}})
+Module["22"] = createStageConfig({StageNumber = 21, RequiredStages = {"21", "Special1"}, Unlock_ByTouch = true})
+Module["VIP"] = createStageConfig({StageNumber = 0, RequiredStages = {"50"}, Unlock_ByTouch = true})
 
 
 ----- Badges -----

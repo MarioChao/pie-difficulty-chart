@@ -14,7 +14,9 @@ local Events = script:WaitForChild("Events")
 
 ---------- Module variables ----------
 
-Module.StageSelect_Bindable = Events:WaitForChild("StageSelect_Bindable")
+Module.StageSelectQuery_Bindable = Events.StageSelectQuery_Bindable
+Module.StageSelected_Bindable = Events.StageSelected_Bindable
+Module.StageUnlockQuery_Bindable = Events.StageUnlockQuery_Bindable
 
 
 ---------- Return module ----------

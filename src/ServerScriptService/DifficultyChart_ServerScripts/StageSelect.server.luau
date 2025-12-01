@@ -69,6 +69,9 @@ local function selectStage(moveToStage: boolean, player: Player, stage: string)
 	-- Change current stage
 	playerProfile.Data.CurrentStage = stage
 
+	-- Fire server event
+	ServerEvents.StageSelected_Bindable:Fire("Player Stage Selected", player, stage)
+
 	-- Change stage on client
 	SharedEvents.StageSelect_Remote:FireClient(player, "Set Stage", stage, stageInfo.StageNumber)
 
@@ -123,7 +126,7 @@ local function onStageSelectServerEvent(player: Player, mode: string, ...)
 	end
 end
 
-local function onStageSelectBindableEvent(mode: string, ...)
+local function onStageSelectQueryBindableEvent(mode: string, ...)
 	if mode == "Select Stage No Move" then
 		selectStage(false, ...)
 	end
@@ -149,7 +152,7 @@ end
 ---------- Calling / connecting functions ----------
 
 SharedEvents.StageSelect_Remote.OnServerEvent:Connect(onStageSelectServerEvent)
-ServerEvents.StageSelect_Bindable.Event:Connect(onStageSelectBindableEvent)
+ServerEvents.StageSelectQuery_Bindable.Event:Connect(onStageSelectQueryBindableEvent)
 
 for _, player in Players:GetPlayers() do
 	task.defer(onPlayerAdded, player)
