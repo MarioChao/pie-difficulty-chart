@@ -24,9 +24,18 @@ local _Modules = script.Parent.Parent.Modules
 local BadgeUtil = require(_Modules.BadgeUtil)
 
 
----------- Variables ----------
+---------- Constants ----------
 
-local TOUCH_DISTANCE_EPSILON = 7
+local Constants = {}
+Constants.touchDistanceEpsilon = 7
+
+table.freeze(Constants)
+
+
+---------- Globals ----------
+
+local Globals = {}
+Globals.stage_player_touchThrottled = {} :: {[string]: {[Player]: boolean}}
 
 
 ---------- Local functions ----------
@@ -92,7 +101,9 @@ unlockStage = function(player: Player, stage: string)
 
 	-- Award badge
 	if stageConfig.AwardBadge and previousStage == stageConfig.AwardBadge.fromStage then
-		BadgeUtil.awardBadgeLoop(player, stageConfig.AwardBadge.id, stageConfig.AwardBadge.name)
+		task.defer(function()
+			BadgeUtil.awardBadgeLoop(player, stageConfig.AwardBadge.id, stageConfig.AwardBadge.name)
+		end)
 	end
 
 	-- Update best stage
@@ -129,10 +140,22 @@ onStagePartTouched = function(part: BasePart, stage: string, stagePart: BasePart
 	local partPosition = part.CFrame.Position
 	local stagePartPosition = stagePart.CFrame.Position
 	local touchDistance = (partPosition - stagePartPosition).Magnitude
-	if touchDistance > (part.ExtentsSize.Magnitude + stagePart.ExtentsSize.Magnitude) / 2 + TOUCH_DISTANCE_EPSILON then
-		-- print(`[Stage Unlock]: Player {player.UserId} invald touch detected, stage {previousStage} => {stage}`)
+	if touchDistance > (part.ExtentsSize.Magnitude + stagePart.ExtentsSize.Magnitude) / 2 + Constants.touchDistanceEpsilon then
+		-- print(`[Stage Unlock]: Player {player.UserId} invalid touch detected, stage {previousStage} => {stage}`)
 		return
 	end
+
+	-- Validate player stage touch throttled
+	if not Globals.stage_player_touchThrottled[stage] then
+		Globals.stage_player_touchThrottled[stage] = {}
+	end
+	if Globals.stage_player_touchThrottled[stage][player] then
+		return
+	end
+	Globals.stage_player_touchThrottled[stage][player] = true
+	task.delay(0.1, function()
+		Globals.stage_player_touchThrottled[stage][player] = nil
+	end)
 
 	-- Unlock
 	unlockStage(player, stage)
